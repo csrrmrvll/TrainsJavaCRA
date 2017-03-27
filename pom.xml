@@ -5,8 +5,16 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>trains</name>
   <description>This is a program to provide information about routes in a railroad network</description>
+  <dependencies>
+	<dependency>
+	  <groupId>junit</groupId>
+	  <artifactId>junit</artifactId>
+	  <version>4.12</version>
+	</dependency>
+  </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
+	<!-- https://mvnrepository.com/artifact/junit/junit -->	
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
