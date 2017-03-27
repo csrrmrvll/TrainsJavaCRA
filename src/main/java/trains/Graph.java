@@ -1,13 +1,14 @@
 package trains;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Graph {
 	
-	Map<Node, List<Route>> map;
+	final Map<Node, List<Route>> map = new HashMap<>();
 	
 	public Graph(List<String> nodes) {
 		for (String s : nodes) {
@@ -16,15 +17,24 @@ public class Graph {
 			final int distance = Integer.valueOf(s.charAt(2));
 			final Route route = new Route(end, distance);
 			if (this.map.containsKey(start)) {
-				this.map.get(start).add(route);
+				final List<Route> routes = this.map.get(start);
+				routes.add(route);
+				this.map.put(start, routes);
 			} else {
-				this.map.put(start, Arrays.asList(route));
+				final ArrayList<Route> routes = new ArrayList<>();
+				routes.add(route);
+				this.map.put(start, routes);
 			}
 		}
 	}
 	
 	public final Collection<List<Route>> getEdges() {
 		return this.map.values();
+	}
+	
+	@Override
+	public String toString() {
+		return this.map.toString();
 	}
 	
 }

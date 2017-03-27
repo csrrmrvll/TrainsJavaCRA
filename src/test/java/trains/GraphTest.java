@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,7 +56,9 @@ public class GraphTest {
 	public final void testGraph() {
 		final List<String> nodes = Arrays.asList("AB5", "BC4", "CD8", "DC8", "DE6", "AD5", "CE2", "EB3", "AE7");
 		final Graph graph = new Graph(nodes);
-		fail("Not yet implemented"); // TODO
+		final String expected = "";
+		final String actual = graph.toString();
+		Assert.assertEquals(expected, actual);
 	}
 	
 	/**
