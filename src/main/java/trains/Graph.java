@@ -83,8 +83,9 @@ public class Graph {
 		}
 	}
 	
-	private void getNumberOfTrips(List<Stop> stops, Stop from, Stop to, Set<Stop> explored, int nosts, TripCount tc) {
-		if (++nosts > 3) {
+	private void getNumberOfTrips(List<Stop> stops, Stop from, Stop to, int stopsCount, Set<Stop> explored, int nosts,
+			TripCount tc) {
+		if (++nosts > stopsCount) {
 			return;
 		}
 		if (stops == null) {
@@ -100,16 +101,16 @@ public class Graph {
 			}
 			explored.add(s);
 			final List<Stop> newStops = this.map.get(s);
-			this.getNumberOfTrips(newStops, s, to, explored, nosts, tc);
+			this.getNumberOfTrips(newStops, s, to, stopsCount, explored, nosts, tc);
 		}
 	}
 	
-	public int getNumberOfTrips(String from, String to) {
+	public int getNumberOfTrips(String from, String to, int stopsCount) {
 		final Set<Stop> explored = new HashSet<>();
 		final Stop f = new Stop(from);
 		final List<Stop> stops = this.map.get(f);
 		final TripCount tc = new TripCount(0);
-		this.getNumberOfTrips(stops, f, new Stop(to), explored, 0, tc);
+		this.getNumberOfTrips(stops, f, new Stop(to), stopsCount, explored, 0, tc);
 		return tc.getValue();
 	}
 	
