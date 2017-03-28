@@ -3,9 +3,8 @@
  */
 package trains;
 
-import static org.junit.Assert.fail;
-
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -21,52 +20,35 @@ import org.junit.Test;
  */
 public class GraphTest {
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 	}
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 	}
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 	
-	/**
-	 * Test method for {@link trains.Graph#Graph(java.util.List)}.
-	 */
 	@Test
 	public final void testGraph() {
 		final List<String> nodes = Arrays.asList("AB5", "BC4", "CD8", "DC8", "DE6", "AD5", "CE2", "EB3", "AE7");
 		final Graph graph = new Graph(nodes);
-		final String expected = "";
+		Collections.sort(nodes);
+		final StringBuilder sb = new StringBuilder();
+		for (String s : nodes) {
+			sb.append(s);
+		}
+		final String expected = sb.toString();
+		System.out.println(expected);
 		final String actual = graph.toString();
 		Assert.assertEquals(expected, actual);
-	}
-	
-	/**
-	 * Test method for {@link trains.Graph#getEdges()}.
-	 */
-	@Test
-	public final void testGetEdges() {
-		fail("Not yet implemented"); // TODO
 	}
 	
 }

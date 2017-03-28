@@ -18,4 +18,9 @@ public class Route {
 		return this.distance;
 	}
 	
+	@Override
+	public String toString() {
+		return this.node.toString() + String.valueOf(this.distance);
+	}
+	
 }

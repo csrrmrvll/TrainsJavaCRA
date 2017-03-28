@@ -4,8 +4,8 @@ public class Node {
 	
 	String town;
 	
-	public Node(char c) {
-		this.town = String.valueOf(c);
+	public Node(String town) {
+		this.town = town;
 	}
 	
 	public String getTown() {
@@ -40,6 +40,11 @@ public class Node {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return this.town != null ? this.town : "null";
 	}
 	
 }
