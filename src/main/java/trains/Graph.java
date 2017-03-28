@@ -2,9 +2,11 @@ package trains;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class Graph {
 	
@@ -62,6 +64,31 @@ public class Graph {
 			}
 		}
 		return distance;
+	}
+	
+	private void getNumberOfTrips(List<Stop> stops, Stop to, Set<Stop> explored, int nosts, int nots) {
+		for (Stop s : stops) {
+			explored.add(s);
+			++nots;
+			if (++nosts > 3) {
+				return;
+			}
+			if (to.equals(s)) {
+				++nots;
+				return;
+			}
+			final List<Stop> newStops = this.map.get(s);
+			this.getNumberOfTrips(newStops, to, explored, nosts, nots);
+		}
+	}
+	
+	public int getNumberOfTrips(String from, String to) {
+		final Set<Stop> explored = new HashSet<>();
+		explored.add(new Stop(from));
+		final List<Stop> stops = this.map.get(from);
+		final Integer nosts = 0;
+		this.getNumberOfTrips(stops, new Stop(to), explored, nosts, 0);
+		return nosts;
 	}
 	
 	@Override
