@@ -29,18 +29,32 @@ public class GraphTest {
 	private static final String					D			= "D";
 	private static final String					E			= "E";
 	
+	private static final String					AB			= A + B;
+	private static final String					BC			= B + C;
+	private static final String					CD			= C + D;
+	private static final String					DC			= D + C;
+	private static final String					DE			= D + E;
+	private static final String					AD			= A + D;
+	private static final String					CE			= C + E;
+	private static final String					EB			= E + B;
+	private static final String					AE			= A + E;
+	
 	private static final int					DIST_AB		= 5;
 	private static final int					DIST_BC		= 4;
 	private static final int					DIST_CD		= 8;
 	private static final int					DIST_DC		= 8;
+	private static final int					DIST_DE		= 6;
 	private static final int					DIST_AD		= 5;
+	private static final int					DIST_CE		= 2;
 	private static final int					DIST_EB		= 3;
 	private static final int					DIST_AE		= 7;
 	
-	private static final List<String>			GRAPH_INPUT	= Arrays.asList("AB5", "BC4", "CD8", "DC8", "DE6", "AD5",
-			"CE2", "EB3", "AE7");
+	private static final List<String>			GRAPH_INPUT	= Arrays.asList(AB + String.valueOf(DIST_AB),
+			BC + String.valueOf(DIST_BC), CD + String.valueOf(DIST_CD), DC + String.valueOf(DIST_DC),
+			DE + String.valueOf(DIST_DE), AD + String.valueOf(DIST_AD), CE + String.valueOf(DIST_CE),
+			EB + String.valueOf(DIST_EB), AE + String.valueOf(DIST_AE));
+	
 	private static final String					ABC			= A + B + C;
-	private static final String					AD			= A + D;
 	private static final String					ADC			= A + D + C;
 	private static final String					AEBCD		= A + E + B + C + D;
 	private static final String					AED			= A + E + D;
