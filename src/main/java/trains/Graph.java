@@ -1,27 +1,27 @@
 package trains;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class Graph {
 	
-	final Map<Route, Integer> map = new HashMap<>();
+	final Map<String, List<Trip>> map = new HashMap<>();
 	
 	public Graph(List<String> nodes) {
 		for (String s : nodes) {
 			final String start = s.substring(0, 1);
+			List<Trip> elem = this.map.get(start);
+			if (elem == null) {
+				this.map.put(start, new ArrayList<>());
+			}
 			final String end = s.substring(1, 2);
-			final Route route = new Route(start, end);
 			final int distance = Integer.valueOf(s.substring(2, 3));
-			this.map.put(route, distance);
+			final Trip trip = new Trip(end, distance);
+			this.map.get(start).add(trip);
 		}
-	}
-	
-	public Set<Entry<Route, Integer>> getRoutes() {
-		return this.map.entrySet();
 	}
 	
 	public class NoSuchRouteError extends Exception {
@@ -45,9 +45,18 @@ public class Graph {
 	public int getRouteDistance(String route) throws NoSuchRouteError {
 		int distance = 0;
 		for (int i = 0; i < route.length() - 1; ++i) {
-			final Route trip = new Route(route.substring(i, i + 2));
-			if (this.map.containsKey(trip)) {
-				distance += this.map.get(trip);
+			final String start = route.substring(i, i + 1);
+			final String end = route.substring(i + 1, i + 2);
+			if (this.map.containsKey(start)) {
+				final List<Trip> trips = this.map.get(start);
+				final int idx = trips.indexOf(new Trip(end));
+				if (idx != -1) {
+					final Trip trip = trips.get(idx);
+					distance += trip.getDistance();
+				} else {
+					throw new NoSuchRouteError();
+				}
+				
 			} else {
 				throw new NoSuchRouteError();
 			}
@@ -58,10 +67,14 @@ public class Graph {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		for (Entry<Route, Integer> e : this.map.entrySet()) {
-			final Route route = e.getKey();
-			final int distance = e.getValue();
-			sb.append(route).append(String.valueOf(distance));
+		for (Entry<String, List<Trip>> e : this.map.entrySet()) {
+			final String start = e.getKey();
+			final List<Trip> trips = e.getValue();
+			for (Trip trip : trips) {
+				final String end = trip.getEnd();
+				final int distance = trip.getDistance();
+				sb.append(start).append(end).append(String.valueOf(distance));
+			}
 		}
 		return sb.toString();
 	}

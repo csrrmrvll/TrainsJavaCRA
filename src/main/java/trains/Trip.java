@@ -1,30 +1,25 @@
 package trains;
 
-public class Route {
+public class Trip {
 	
-	String	start;
 	String	end;
+	int		distance;
 	
-	public Route(String route) {
-		this(route.substring(0, 1), route.substring(1, 2));
+	public Trip(String end) {
+		this(end, 0);
 	}
 	
-	public Route(String start, String end) {
-		this.start = start;
+	public Trip(String end, int distance) {
 		this.end = end;
-	}
-	
-	public final String getStart() {
-		return this.start;
+		this.distance = distance;
 	}
 	
 	public final String getEnd() {
 		return this.end;
 	}
 	
-	@Override
-	public String toString() {
-		return this.start.toString() + this.end.toString();
+	public int getDistance() {
+		return this.distance;
 	}
 	
 	@Override
@@ -32,7 +27,6 @@ public class Route {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((this.end == null) ? 0 : this.end.hashCode());
-		result = prime * result + ((this.start == null) ? 0 : this.start.hashCode());
 		return result;
 	}
 	
@@ -47,7 +41,7 @@ public class Route {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Route other = (Route) obj;
+		Trip other = (Trip) obj;
 		if (this.end == null) {
 			if (other.end != null) {
 				return false;
@@ -55,14 +49,12 @@ public class Route {
 		} else if (!this.end.equals(other.end)) {
 			return false;
 		}
-		if (this.start == null) {
-			if (other.start != null) {
-				return false;
-			}
-		} else if (!this.start.equals(other.start)) {
-			return false;
-		}
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return this.end + this.distance;
 	}
 	
 }
