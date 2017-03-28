@@ -125,5 +125,6 @@ public class GraphTest {
 		final int expected = 2;
 		final int actual = GRAPH.getNumberOfTrips(C, C);
 		Assert.assertEquals(expected, actual);
+		System.out.println(actual);
 	}
 }
