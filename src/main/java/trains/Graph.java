@@ -66,29 +66,51 @@ public class Graph {
 		return distance;
 	}
 	
-	private void getNumberOfTrips(List<Stop> stops, Stop to, Set<Stop> explored, int nosts, int nots) {
+	private class TripCount {
+		
+		private int value;
+		
+		public TripCount(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return this.value;
+		}
+		
+		public void addOne() {
+			++this.value;
+		}
+	}
+	
+	private void getNumberOfTrips(List<Stop> stops, Stop from, Stop to, Set<Stop> explored, int nosts, TripCount tc) {
+		if (++nosts > 3) {
+			return;
+		}
+		if (stops == null) {
+			return;
+		}
 		for (Stop s : stops) {
-			explored.add(s);
-			++nots;
-			if (++nosts > 3) {
-				return;
-			}
 			if (to.equals(s)) {
-				++nots;
+				tc.addOne();
 				return;
 			}
+			if (explored.contains(s)) {
+				continue;
+			}
+			explored.add(s);
 			final List<Stop> newStops = this.map.get(s);
-			this.getNumberOfTrips(newStops, to, explored, nosts, nots);
+			this.getNumberOfTrips(newStops, s, to, explored, nosts, tc);
 		}
 	}
 	
 	public int getNumberOfTrips(String from, String to) {
 		final Set<Stop> explored = new HashSet<>();
-		explored.add(new Stop(from));
-		final List<Stop> stops = this.map.get(from);
-		final Integer nosts = 0;
-		this.getNumberOfTrips(stops, new Stop(to), explored, nosts, 0);
-		return nosts;
+		final Stop f = new Stop(from);
+		final List<Stop> stops = this.map.get(f);
+		final TripCount tc = new TripCount(0);
+		this.getNumberOfTrips(stops, f, new Stop(to), explored, 0, tc);
+		return tc.getValue();
 	}
 	
 	@Override

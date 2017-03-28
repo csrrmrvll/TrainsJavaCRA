@@ -120,4 +120,10 @@ public class GraphTest {
 		this.testRouteDistance(AED);
 	}
 	
+	@Test
+	public final void testNumberOfTrips() {
+		final int expected = 2;
+		final int actual = GRAPH.getNumberOfTrips(C, C);
+		Assert.assertEquals(expected, actual);
+	}
 }
