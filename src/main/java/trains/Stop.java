@@ -1,15 +1,15 @@
 package trains;
 
-public class Trip {
+public class Stop {
 	
 	String	end;
 	int		distance;
 	
-	public Trip(String end) {
+	public Stop(String end) {
 		this(end, 0);
 	}
 	
-	public Trip(String end, int distance) {
+	public Stop(String end, int distance) {
 		this.end = end;
 		this.distance = distance;
 	}
@@ -41,7 +41,7 @@ public class Trip {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Trip other = (Trip) obj;
+		Stop other = (Stop) obj;
 		if (this.end == null) {
 			if (other.end != null) {
 				return false;

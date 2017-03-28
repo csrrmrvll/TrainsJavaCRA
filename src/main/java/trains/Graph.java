@@ -8,18 +8,18 @@ import java.util.Map.Entry;
 
 public class Graph {
 	
-	final Map<String, List<Trip>> map = new HashMap<>();
+	final Map<Stop, List<Stop>> map = new HashMap<>();
 	
 	public Graph(List<String> nodes) {
 		for (String s : nodes) {
-			final String start = s.substring(0, 1);
-			List<Trip> elem = this.map.get(start);
+			final Stop start = new Stop(s.substring(0, 1));
+			List<Stop> elem = this.map.get(start);
 			if (elem == null) {
 				this.map.put(start, new ArrayList<>());
 			}
 			final String end = s.substring(1, 2);
 			final int distance = Integer.valueOf(s.substring(2, 3));
-			final Trip trip = new Trip(end, distance);
+			final Stop trip = new Stop(end, distance);
 			this.map.get(start).add(trip);
 		}
 	}
@@ -45,13 +45,13 @@ public class Graph {
 	public int getRouteDistance(String route) throws NoSuchRouteError {
 		int distance = 0;
 		for (int i = 0; i < route.length() - 1; ++i) {
-			final String start = route.substring(i, i + 1);
-			final String end = route.substring(i + 1, i + 2);
+			final Stop start = new Stop(route.substring(i, i + 1));
+			final Stop end = new Stop(route.substring(i + 1, i + 2));
 			if (this.map.containsKey(start)) {
-				final List<Trip> trips = this.map.get(start);
-				final int idx = trips.indexOf(new Trip(end));
+				final List<Stop> trips = this.map.get(start);
+				final int idx = trips.indexOf(end);
 				if (idx != -1) {
-					final Trip trip = trips.get(idx);
+					final Stop trip = trips.get(idx);
 					distance += trip.getDistance();
 				} else {
 					throw new NoSuchRouteError();
@@ -67,10 +67,10 @@ public class Graph {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		for (Entry<String, List<Trip>> e : this.map.entrySet()) {
-			final String start = e.getKey();
-			final List<Trip> trips = e.getValue();
-			for (Trip trip : trips) {
+		for (Entry<Stop, List<Stop>> e : this.map.entrySet()) {
+			final Stop start = e.getKey();
+			final List<Stop> trips = e.getValue();
+			for (Stop trip : trips) {
 				final String end = trip.getEnd();
 				final int distance = trip.getDistance();
 				sb.append(start).append(end).append(String.valueOf(distance));
