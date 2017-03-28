@@ -89,9 +89,9 @@ public class GraphTest {
 			final String actual = String.valueOf(GRAPH.getRouteDistance(route));
 			final String expected = DISTANCES.get(route);
 			Assert.assertEquals(expected, actual);
+			System.out.println(actual);
 		} catch (NoSuchRouteError e) {
-			final String error = "Problem computing " + route + "'s distance: " + e.getMessage();
-			System.out.println(error);
+			System.out.println(e.getMessage());
 		}
 	}
 	
