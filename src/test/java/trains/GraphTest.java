@@ -120,19 +120,19 @@ public class GraphTest {
 		this.testRouteDistance(AED);
 	}
 	
-	private final void testNumberOfTrips(String from, String to, int stopsCount, int expected) {
-		final int actual = GRAPH.getNumberOfTrips(from, to, stopsCount);
+	private final void testNumberOfTrips(String from, String to, StopCondition sc, int expected) {
+		final int actual = GRAPH.getNumberOfTrips(from, to, sc);
 		Assert.assertEquals(expected, actual);
 		System.out.println(actual);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromCToC() {
-		this.testNumberOfTrips(C, C, 3, 2);
+		this.testNumberOfTrips(C, C, new LessThanOrEqualStopsCondition(3), 2);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromAToC() {
-		this.testNumberOfTrips(A, C, 4, 3);
+		this.testNumberOfTrips(A, C, new EqualToStopsCondition(4), 3);
 	}
 }

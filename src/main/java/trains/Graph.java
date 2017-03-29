@@ -2,11 +2,9 @@ package trains;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class Graph {
 	
@@ -66,51 +64,11 @@ public class Graph {
 		return distance;
 	}
 	
-	private class TripCount {
-		
-		private int value;
-		
-		public TripCount(int value) {
-			this.value = value;
-		}
-		
-		public int getValue() {
-			return this.value;
-		}
-		
-		public void addOne() {
-			++this.value;
-		}
-	}
-	
-	private void getNumberOfTrips(List<Stop> stops, Stop from, Stop to, int stopsCount, Set<Stop> explored, int nosts,
-			TripCount tc) {
-		if (++nosts > stopsCount) {
-			return;
-		}
-		if (stops == null) {
-			return;
-		}
-		for (Stop s : stops) {
-			if (to.equals(s)) {
-				tc.addOne();
-				return;
-			}
-			if (explored.contains(s)) {
-				continue;
-			}
-			explored.add(s);
-			final List<Stop> newStops = this.map.get(s);
-			this.getNumberOfTrips(newStops, s, to, stopsCount, explored, nosts, tc);
-		}
-	}
-	
-	public int getNumberOfTrips(String from, String to, int stopsCount) {
-		final Set<Stop> explored = new HashSet<>();
+	public int getNumberOfTrips(String from, String to, StopCondition sc) {
 		final Stop f = new Stop(from);
 		final List<Stop> stops = this.map.get(f);
-		final TripCount tc = new TripCount(0);
-		this.getNumberOfTrips(stops, f, new Stop(to), stopsCount, explored, 0, tc);
+		final TripCounter tc = new TripCounter(this, sc);
+		tc.getTrips(stops, f, new Stop(to));
 		return tc.getValue();
 	}
 	
