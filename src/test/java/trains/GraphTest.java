@@ -84,12 +84,16 @@ public class GraphTest {
 	public void tearDown() throws Exception {
 	}
 	
-	private final void testRouteDistance(String route) {
+	private static <T> void assertAndPrint(T expected, T actual) {
+		Assert.assertEquals(expected, actual);
+		System.out.println(actual);
+	}
+	
+	private static final void testRouteDistance(String route) {
 		try {
 			final String actual = String.valueOf(GRAPH.getRouteDistance(route));
 			final String expected = DISTANCES.get(route);
-			Assert.assertEquals(expected, actual);
-			System.out.println(actual);
+			GraphTest.assertAndPrint(expected, actual);
 		} catch (NoSuchRouteError e) {
 			System.out.println(e.getMessage());
 		}
@@ -97,63 +101,61 @@ public class GraphTest {
 	
 	@Test
 	public final void testRouteDistanceABC() {
-		this.testRouteDistance(ABC);
+		GraphTest.testRouteDistance(ABC);
 	}
 	
 	@Test
 	public final void testRouteDistanceAD() {
-		this.testRouteDistance(AD);
+		GraphTest.testRouteDistance(AD);
 	}
 	
 	@Test
 	public final void testRouteDistanceADC() {
-		this.testRouteDistance(ADC);
+		GraphTest.testRouteDistance(ADC);
 	}
 	
 	@Test
 	public final void testRouteDistanceAEBCD() {
-		this.testRouteDistance(AEBCD);
+		GraphTest.testRouteDistance(AEBCD);
 	}
 	
 	@Test
 	public final void testRouteDistanceAED() {
-		this.testRouteDistance(AED);
+		GraphTest.testRouteDistance(AED);
 	}
 	
-	private final void testNumberOfTrips(String from, String to, StopCondition sc, int expected) {
+	private static final void testNumberOfTrips(String from, String to, StopCondition sc, int expected) {
 		final int actual = GRAPH.getNumberOfTrips(from, to, sc);
-		Assert.assertEquals(expected, actual);
-		System.out.println(actual);
+		GraphTest.assertAndPrint(expected, actual);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromCToCWithLessThanThreeStops() {
-		this.testNumberOfTrips(C, C, new LessThanOrEqualStopCondition(3), 2);
+		GraphTest.testNumberOfTrips(C, C, new LessThanOrEqualStopCondition(3), 2);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromCToCWithDistanceLessThanThirty() {
-		this.testNumberOfTrips(C, C, new LessThanStopCondition(30), 2);
+		GraphTest.testNumberOfTrips(C, C, new LessThanStopCondition(30), 7);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromAToC() {
-		this.testNumberOfTrips(A, C, new EqualToStopCondition(4), 3);
+		GraphTest.testNumberOfTrips(A, C, new EqualToStopCondition(4), 3);
 	}
 	
-	private final void testShortestRoute(String from, String to, int expected) {
+	private static final void testShortestRoute(String from, String to, int expected) {
 		final int actual = GRAPH.getShortestRoute(from, to);
-		Assert.assertEquals(expected, actual);
-		System.out.println(actual);
-	}
-	
-	@Test
-	public final void testShortestRouteFromBToB() {
-		this.testShortestRoute(B, B, 9);
+		GraphTest.assertAndPrint(expected, actual);
 	}
 	
 	@Test
 	public final void testShortestRouteFromAToC() {
-		this.testShortestRoute(A, C, 9);
+		GraphTest.testShortestRoute(A, C, 9);
+	}
+	
+	@Test
+	public final void testShortestRouteFromBToB() {
+		GraphTest.testShortestRoute(B, B, 9);
 	}
 }

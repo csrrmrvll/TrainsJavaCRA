@@ -2,9 +2,11 @@ package trains;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 class Graph {
 	
@@ -76,8 +78,38 @@ class Graph {
 		return tc.getValue();
 	}
 	
-	int getShortestRoute(String from, String to) {
-		return 0;
+	int getShortestRoute(String f, String t) {
+		final Stop from = new Stop(f);
+		final Stop to = new Stop(t);
+		final Heap<Integer, Stop> heap = new Heap<>();
+		final Set<Stop> visited = new HashSet<>();
+		final Map<Stop, Integer> scores = new HashMap<>();
+		final int defaultScore = Integer.MAX_VALUE;
+		for (Stop s : this.map.keySet()) {
+			heap.put(defaultScore, s);
+			scores.put(s, defaultScore);
+		}
+		heap.put(0, from);
+		while (heap.isEmpty() == false) {
+			final Entry<Integer, Stop> top = heap.pop();
+			final Stop current = top.getValue();
+			final int currentScore = top.getKey();
+			scores.put(current, currentScore);
+			visited.add(current);
+			final List<Stop> stops = this.map.get(current);
+			for (Stop s : stops) {
+				if (visited.contains(s) == false) {
+					final int oldScore = scores.get(s);
+					heap.remove(oldScore);
+					final int distance = s.getDistance();
+					final int tempScore = currentScore + distance;
+					final int newScore = Math.min(oldScore, tempScore);
+					scores.put(s, newScore);
+					heap.put(newScore, s);
+				}
+			}
+		}
+		return scores.get(to);
 	}
 	
 	@Override
