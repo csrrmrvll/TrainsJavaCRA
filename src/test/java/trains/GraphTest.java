@@ -144,7 +144,7 @@ public class GraphTest {
 	
 	@Test
 	public final void testShortestRouteFromBToB() {
-		this.testShortestRoute(C, C, 9);
+		this.testShortestRoute(B, B, 9);
 	}
 	
 	@Test
