@@ -135,4 +135,20 @@ public class GraphTest {
 	public final void testNumberOfTripsFromAToC() {
 		this.testNumberOfTrips(A, C, new EqualToStopsCondition(4), 3);
 	}
+	
+	private final void testShortestRoute(String from, String to, int expected) {
+		final int actual = GRAPH.getShortestRoute(from, to);
+		Assert.assertEquals(expected, actual);
+		System.out.println(actual);
+	}
+	
+	@Test
+	public final void testShortestRouteFromBToB() {
+		this.testShortestRoute(C, C, 9);
+	}
+	
+	@Test
+	public final void testShortestRouteFromAToC() {
+		this.testShortestRoute(A, C, 9);
+	}
 }

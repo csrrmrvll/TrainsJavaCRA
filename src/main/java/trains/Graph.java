@@ -87,4 +87,8 @@ public class Graph {
 		return sb.toString();
 	}
 	
+	public int getShortestRoute(String from, String to) {
+		return 0;
+	}
+	
 }
