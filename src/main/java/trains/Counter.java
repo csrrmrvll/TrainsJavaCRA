@@ -4,23 +4,27 @@ class Counter {
 	
 	private int value;
 	
-	public Counter() {
+	Counter() {
 		this(0);
 	}
 	
-	public Counter(int value) {
+	Counter(int value) {
 		this.value = value;
 	}
 	
-	public int getValue() {
+	int getValue() {
 		return this.value;
 	}
 	
-	public void addOne() {
+	void increase() {
 		++this.value;
 	}
 	
-	public void decrease() {
+	void increase(int v) {
+		this.value += v;
+	}
+	
+	void decrease() {
 		--this.value;
 	}
 }

@@ -1,24 +1,24 @@
 package trains;
 
-public class Stop {
+class Stop {
 	
-	String	end;
-	int		distance;
+	private String	end;
+	private int		distance;
 	
-	public Stop(String end) {
+	Stop(String end) {
 		this(end, 0);
 	}
 	
-	public Stop(String end, int distance) {
+	Stop(String end, int distance) {
 		this.end = end;
 		this.distance = distance;
 	}
 	
-	public final String getEnd() {
+	final String getEnd() {
 		return this.end;
 	}
 	
-	public int getDistance() {
+	int getDistance() {
 		return this.distance;
 	}
 	

@@ -138,7 +138,7 @@ public class GraphTest {
 	
 	@Test
 	public final void testNumberOfTripsFromAToC() {
-		this.testNumberOfTrips(A, C, new EqualToStopsondition(4), 3);
+		this.testNumberOfTrips(A, C, new EqualToStopCondition(4), 3);
 	}
 	
 	private final void testShortestRoute(String from, String to, int expected) {

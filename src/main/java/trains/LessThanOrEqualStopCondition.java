@@ -1,6 +1,6 @@
 package trains;
 
-public class LessThanOrEqualStopCondition extends StopCondition {
+class LessThanOrEqualStopCondition extends StopCondition {
 	
 	LessThanOrEqualStopCondition(int limit) {
 		super(limit);
@@ -8,6 +8,6 @@ public class LessThanOrEqualStopCondition extends StopCondition {
 	
 	@Override
 	protected boolean virtualMustStop() {
-		return this.counter.getValue() > this.limit;
+		return this.getCounter().getValue() > this.getLimit();
 	}
 }

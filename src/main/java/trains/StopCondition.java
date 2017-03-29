@@ -2,16 +2,24 @@ package trains;
 
 abstract class StopCondition {
 	
-	protected int		limit;
-	protected Counter	counter;
+	private int		limit;
+	private Counter	counter;
 	
-	public StopCondition(int limit) {
+	StopCondition(int limit) {
 		this.limit = limit;
 		this.counter = new Counter();
 	}
 	
+	protected int getLimit() {
+		return this.limit;
+	}
+	
+	protected Counter getCounter() {
+		return this.counter;
+	}
+	
 	boolean mustStop() {
-		this.counter.addOne();
+		this.counter.increase();
 		return this.virtualMustStop();
 	}
 	
