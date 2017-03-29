@@ -128,17 +128,17 @@ public class GraphTest {
 	
 	@Test
 	public final void testNumberOfTripsFromCToCWithLessThanThreeStops() {
-		this.testNumberOfTrips(C, C, new LessThanOrEqualStopsCondition(3), 2);
+		this.testNumberOfTrips(C, C, new LessThanOrEqualStopCondition(3), 2);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromCToCWithDistanceLessThanThirty() {
-		this.testNumberOfTrips(C, C, new LessThanStopCondition(3), 2);
+		this.testNumberOfTrips(C, C, new LessThanStopCondition(30), 2);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromAToC() {
-		this.testNumberOfTrips(A, C, new EqualToStopsCondition(4), 3);
+		this.testNumberOfTrips(A, C, new EqualToStopsondition(4), 3);
 	}
 	
 	private final void testShortestRoute(String from, String to, int expected) {

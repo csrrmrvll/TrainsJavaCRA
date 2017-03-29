@@ -1,8 +1,8 @@
 package trains;
 
-public class LessThanOrEqualStopsCondition extends StopCondition {
+public class LessThanOrEqualStopCondition extends StopCondition {
 	
-	LessThanOrEqualStopsCondition(int limit) {
+	LessThanOrEqualStopCondition(int limit) {
 		super(limit);
 	}
 	
