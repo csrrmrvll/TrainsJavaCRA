@@ -10,7 +10,12 @@ abstract class StopCondition {
 		this.counter = new Counter();
 	}
 	
-	abstract boolean mustStop();
+	boolean mustStop() {
+		this.counter.addOne();
+		return this.virtualMustStop();
+	}
+	
+	protected abstract boolean virtualMustStop();
 	
 	void decrease() {
 		this.counter.decrease();

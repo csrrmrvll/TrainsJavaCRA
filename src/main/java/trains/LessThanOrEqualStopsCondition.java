@@ -7,8 +7,7 @@ public class LessThanOrEqualStopsCondition extends StopCondition {
 	}
 	
 	@Override
-	boolean mustStop() {
-		this.counter.addOne();
+	protected boolean virtualMustStop() {
 		return this.counter.getValue() > this.limit;
 	}
 }
