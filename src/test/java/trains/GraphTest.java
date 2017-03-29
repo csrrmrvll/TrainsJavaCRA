@@ -133,7 +133,7 @@ public class GraphTest {
 	
 	@Test
 	public final void testNumberOfTripsFromCToCWithDistanceLessThanThirty() {
-		this.testNumberOfTrips(C, C, new LessThanStopsCondition(3), 2);
+		this.testNumberOfTrips(C, C, new LessThanStopCondition(3), 2);
 	}
 	
 	@Test
