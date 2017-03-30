@@ -10,19 +10,20 @@ import java.util.Set;
 
 class Graph {
 	
-	private final Map<Stop, List<Stop>> map = new HashMap<>();
+	private final Map<Stop, List<Stop>> map;
 	
 	Graph(List<String> nodes) {
+		this.map = new HashMap<>();
 		for (String s : nodes) {
 			final Stop start = new Stop(s.substring(0, 1));
-			List<Stop> elem = this.getMap().get(start);
+			List<Stop> elem = this.map.get(start);
 			if (elem == null) {
-				this.getMap().put(start, new ArrayList<>());
+				this.map.put(start, new ArrayList<>());
 			}
 			final String end = s.substring(1, 2);
 			final int distance = Integer.valueOf(s.substring(2, 3));
 			final Stop trip = new Stop(end, distance);
-			this.getMap().get(start).add(trip);
+			this.map.get(start).add(trip);
 		}
 	}
 	
@@ -53,8 +54,8 @@ class Graph {
 		for (int i = 0; i < route.length() - 1; ++i) {
 			final Stop start = new Stop(route.substring(i, i + 1));
 			final Stop end = new Stop(route.substring(i + 1, i + 2));
-			if (this.getMap().containsKey(start)) {
-				final List<Stop> trips = this.getMap().get(start);
+			if (this.map.containsKey(start)) {
+				final List<Stop> trips = this.map.get(start);
 				final int idx = trips.indexOf(end);
 				if (idx != -1) {
 					final Stop trip = trips.get(idx);
@@ -72,15 +73,13 @@ class Graph {
 	
 	int getNumberOfTrips(String from, String to, StopCondition sc) {
 		final Stop f = new Stop(from);
-		final List<Stop> stops = this.getMap().get(f);
+		final List<Stop> stops = this.map.get(f);
 		final TripCounter tc = new TripCounter(this, sc);
 		tc.getTrips(stops, f, new Stop(to));
 		return tc.getValue();
 	}
 	
-	int getShortestRoute(String f, String t) {
-		final Stop from = new Stop(f);
-		final Stop to = new Stop(t);
+	private int getShortestRoute(Stop from, Stop to) {
 		final Heap<Integer, Stop> heap = new Heap<>();
 		final Set<Stop> visited = new HashSet<>();
 		final Map<Stop, Integer> scores = new HashMap<>();
@@ -98,7 +97,7 @@ class Graph {
 			visited.add(current);
 			final List<Stop> stops = this.map.get(current);
 			for (Stop s : stops) {
-				if (visited.contains(s) == false) {
+				if ((visited.contains(s) == false) || to.equals(s)) {
 					final int oldScore = scores.get(s);
 					heap.remove(oldScore);
 					final int distance = s.getDistance();
@@ -112,10 +111,22 @@ class Graph {
 		return scores.get(to);
 	}
 	
+	private int getShortestCyclicRoute(Stop to) {
+		final Stop from = this.map.get(to).get(0);
+		final int startDistance = from.getDistance();
+		return this.getShortestRoute(from, to) + startDistance;
+	}
+	
+	int getShortestRoute(String f, String t) {
+		final Stop from = new Stop(f);
+		final Stop to = new Stop(t);
+		return from.equals(to) ? this.getShortestCyclicRoute(to) : this.getShortestRoute(from, to);
+	}
+	
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		for (Entry<Stop, List<Stop>> e : this.getMap().entrySet()) {
+		for (Entry<Stop, List<Stop>> e : this.map.entrySet()) {
 			final Stop start = e.getKey();
 			final List<Stop> trips = e.getValue();
 			for (Stop trip : trips) {
