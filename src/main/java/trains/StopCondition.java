@@ -18,6 +18,21 @@ abstract class StopCondition {
 		return this.counter;
 	}
 	
+	void increase() {
+		this.counter.increase();
+	}
+	
+	void increase(int n) {
+		for (int i = 0; i < n; ++i) {
+			this.counter.increase();
+		}
+	}
+	
+	boolean mustStop(Stop s) {
+		this.increase(s.getDistance());
+		return this.virtualMustStop();
+	}
+	
 	boolean mustStop() {
 		this.counter.increase();
 		return this.virtualMustStop();

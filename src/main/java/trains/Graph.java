@@ -73,9 +73,8 @@ class Graph {
 	
 	int getNumberOfTrips(String from, String to, StopCondition sc) {
 		final Stop f = new Stop(from);
-		final List<Stop> stops = this.map.get(f);
 		final TripCounter tc = new TripCounter(this, sc);
-		tc.getTrips(stops, f, new Stop(to));
+		tc.getTrips(f, new Stop(to));
 		return tc.getValue();
 	}
 	
