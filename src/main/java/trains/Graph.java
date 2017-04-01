@@ -7,27 +7,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 class Graph {
 	
-	private final Map<Stop, List<Stop>> map;
+	private final TreeMap<Town, List<Town>>	map;
+	private final Map<Road, Integer>		distances;
 	
 	Graph(List<String> nodes) {
-		this.map = new HashMap<>();
+		this.map = new TreeMap<>();
+		this.distances = new HashMap<>();
 		for (String s : nodes) {
-			final Stop start = new Stop(s.substring(0, 1));
-			List<Stop> elem = this.map.get(start);
-			if (elem == null) {
-				this.map.put(start, new ArrayList<>());
+			final Town from = new Town(s.substring(0, 1));
+			List<Town> stops = this.map.get(from);
+			if (stops == null) {
+				this.map.put(from, new ArrayList<>());
 			}
-			final String end = s.substring(1, 2);
+			final Town to = new Town(s.substring(1, 2));
+			this.map.get(from).add(to);
 			final int distance = Integer.valueOf(s.substring(2, 3));
-			final Stop trip = new Stop(end, distance);
-			this.map.get(start).add(trip);
+			this.distances.put(new Road(from, to), distance);
 		}
 	}
 	
-	Map<Stop, List<Stop>> getMap() {
+	Map<Town, List<Town>> getMap() {
 		return this.map;
 	}
 	
@@ -49,21 +52,14 @@ class Graph {
 		}
 	}
 	
-	int getRouteDistance(String route) throws NoSuchRouteError {
+	int getRouteDistance(Town from, Route route) throws NoSuchRouteError {
 		int distance = 0;
-		for (int i = 0; i < route.length() - 1; ++i) {
-			final Stop start = new Stop(route.substring(i, i + 1));
-			final Stop end = new Stop(route.substring(i + 1, i + 2));
-			if (this.map.containsKey(start)) {
-				final List<Stop> trips = this.map.get(start);
-				final int idx = trips.indexOf(end);
-				if (idx != -1) {
-					final Stop trip = trips.get(idx);
-					distance += trip.getDistance();
-				} else {
-					throw new NoSuchRouteError();
-				}
-				
+		for (Town to : route.getTowns()) {
+			final List<Town> trips = this.map.get(from);
+			final int idx = trips.indexOf(to);
+			if (idx != -1) {
+				distance += this.getDistance(from, to);
+				from = to;
 			} else {
 				throw new NoSuchRouteError();
 			}
@@ -71,67 +67,77 @@ class Graph {
 		return distance;
 	}
 	
-	int getNumberOfTrips(String from, String to, StopCondition sc) {
-		final Stop f = new Stop(from);
+	private int getDistance(Town from, Town to) {
+		final Road r = new Road(from, to);
+		return this.distances.containsKey(r) ? this.distances.get(r) : 0;
+	}
+	
+	private Integer getDistance(Town to) {
+		return this.getDistance(this.map.firstKey(), to);
+	}
+	
+	int getNumberOfTrips(Town from, Town to, StopCondition sc) {
 		final TripCounter tc = new TripCounter(this, sc);
-		tc.getTrips(f, new Stop(to));
+		tc.getTrips(from, to);
 		return tc.getValue();
 	}
 	
-	private int getShortestRoute(Stop from, Stop to) {
-		final Heap<Integer, Stop> heap = new Heap<>();
-		final Set<Stop> visited = new HashSet<>();
-		final Map<Stop, Integer> scores = new HashMap<>();
+	int getShortestRoute(Town from, Town to) {
+		final Heap<Integer, Town> heap = new Heap<>();
+		final Set<Town> visited = new HashSet<>();
+		final Map<Town, Integer> scores = new HashMap<>();
 		final int defaultScore = Integer.MAX_VALUE;
-		for (Stop s : this.map.keySet()) {
-			heap.put(defaultScore, s);
-			scores.put(s, defaultScore);
+		for (Town t : this.map.keySet()) {
+			heap.put(defaultScore, t);
+			scores.put(t, defaultScore);
 		}
-		heap.put(0, from);
+		heap.put(this.getDistance(from), from);
 		while (heap.isEmpty() == false) {
-			final Entry<Integer, Stop> top = heap.pop();
-			final Stop current = top.getValue();
+			final Entry<Integer, Town> top = heap.pop();
+			final Town current = top.getValue();
 			final int currentScore = top.getKey();
 			scores.put(current, currentScore);
 			visited.add(current);
-			final List<Stop> stops = this.map.get(current);
-			for (Stop s : stops) {
-				if ((visited.contains(s) == false) || to.equals(s)) {
-					final int oldScore = scores.get(s);
+			final List<Town> stops = this.map.get(current);
+			for (Town t : stops) {
+				if (visited.contains(t) == false) {
+					final int oldScore = scores.get(t);
 					heap.remove(oldScore);
-					final int distance = s.getDistance();
+					final int distance = this.getDistance(current, t);
 					final int tempScore = currentScore + distance;
 					final int newScore = Math.min(oldScore, tempScore);
-					scores.put(s, newScore);
-					heap.put(newScore, s);
+					scores.put(t, newScore);
+					heap.put(newScore, t);
 				}
 			}
 		}
 		return scores.get(to);
 	}
 	
-	private int getShortestCyclicRoute(Stop to) {
-		final Stop from = this.map.get(to).get(0);
-		final int startDistance = from.getDistance();
-		return this.getShortestRoute(from, to) + startDistance;
-	}
-	
-	int getShortestRoute(String f, String t) {
-		final Stop from = new Stop(f);
-		final Stop to = new Stop(t);
-		return from.equals(to) ? this.getShortestCyclicRoute(to) : this.getShortestRoute(from, to);
+	int getShortestCyclicRoute(Town from) {
+		final List<Town> stops = this.map.get(from);
+		Town to = null;
+		int distance = Integer.MAX_VALUE;
+		for (Town t : stops) {
+			final int d = this.getDistance(from, t);
+			if (d < distance) {
+				to = t;
+				distance = d;
+			}
+		}
+		int startDistance = this.getDistance(from, to);
+		return this.getShortestRoute(to, from) + startDistance;
 	}
 	
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		for (Entry<Stop, List<Stop>> e : this.map.entrySet()) {
-			final Stop start = e.getKey();
-			final List<Stop> trips = e.getValue();
-			for (Stop trip : trips) {
-				final String end = trip.getEnd();
-				final int distance = trip.getDistance();
-				sb.append(start).append(end).append(String.valueOf(distance));
+		for (Entry<Town, List<Town>> e : this.map.entrySet()) {
+			final Town from = e.getKey();
+			final List<Town> trips = e.getValue();
+			for (Town to : trips) {
+				final int distance = this.getDistance(from, to);
+				sb.append(from).append(to).append(String.valueOf(distance));
 			}
 		}
 		return sb.toString();

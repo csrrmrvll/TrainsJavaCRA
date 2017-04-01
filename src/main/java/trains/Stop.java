@@ -2,20 +2,12 @@ package trains;
 
 class Stop {
 	
-	private String	end;
+	private Town	town;
 	private int		distance;
 	
-	Stop(String end) {
-		this(end, 0);
-	}
-	
-	Stop(String end, int distance) {
-		this.end = end;
+	Stop(Town to, int distance) {
+		this.town = to;
 		this.distance = distance;
-	}
-	
-	final String getEnd() {
-		return this.end;
 	}
 	
 	int getDistance() {
@@ -26,7 +18,7 @@ class Stop {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.end == null) ? 0 : this.end.hashCode());
+		result = prime * result + ((this.town == null) ? 0 : this.town.hashCode());
 		return result;
 	}
 	
@@ -42,19 +34,22 @@ class Stop {
 			return false;
 		}
 		Stop other = (Stop) obj;
-		if (this.end == null) {
-			if (other.end != null) {
+		if (this.town == null) {
+			if (other.town != null) {
 				return false;
 			}
-		} else if (!this.end.equals(other.end)) {
+		} else if (!this.town.equals(other.town)) {
 			return false;
 		}
 		return true;
 	}
 	
-	@Override
-	public String toString() {
-		return this.end + this.distance;
+	public Town getTown() {
+		return this.town;
 	}
 	
+	@Override
+	public String toString() {
+		return this.town.toString() + this.distance;
+	}
 }
