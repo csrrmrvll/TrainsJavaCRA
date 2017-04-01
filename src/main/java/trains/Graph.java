@@ -19,19 +19,20 @@ class Graph {
 		this.distances = new HashMap<>();
 		for (String s : nodes) {
 			final Town from = new Town(s.substring(0, 1));
-			List<Town> stops = this.map.get(from);
+			final List<Town> stops = this.getStops(from);
 			if (stops == null) {
 				this.map.put(from, new ArrayList<>());
 			}
 			final Town to = new Town(s.substring(1, 2));
-			this.map.get(from).add(to);
+			this.getStops(from).add(to);
 			final int distance = Integer.valueOf(s.substring(2, 3));
-			this.distances.put(new Road(from, to), distance);
+			final Road road = new Road(from, to);
+			this.distances.put(road, distance);
 		}
 	}
 	
-	Map<Town, List<Town>> getMap() {
-		return this.map;
+	List<Town> getStops(Town from) {
+		return this.map.get(from);
 	}
 	
 	class NoSuchRouteError extends Exception {
@@ -55,9 +56,8 @@ class Graph {
 	int getRouteDistance(Town from, Route route) throws NoSuchRouteError {
 		int distance = 0;
 		for (Town to : route.getTowns()) {
-			final List<Town> trips = this.map.get(from);
-			final int idx = trips.indexOf(to);
-			if (idx != -1) {
+			final List<Town> trips = this.getStops(from);
+			if (trips.contains(to)) {
 				distance += this.getDistance(from, to);
 				from = to;
 			} else {
@@ -92,39 +92,34 @@ class Graph {
 			scores.put(t, defaultScore);
 		}
 		heap.put(this.getDistance(from), from);
-		while (heap.isEmpty() == false) {
+		while (heap.notEmpty()) {
 			final Entry<Integer, Town> top = heap.pop();
 			final Town current = top.getValue();
 			final int currentScore = top.getKey();
 			scores.put(current, currentScore);
 			visited.add(current);
-			final List<Town> stops = this.map.get(current);
-			for (Town t : stops) {
-				if (visited.contains(t) == false) {
-					final int oldScore = scores.get(t);
+			final List<Town> stops = this.getStops(current);
+			for (Town town : stops) {
+				if (visited.contains(town) == false) {
+					final int oldScore = scores.get(town);
 					heap.remove(oldScore);
-					final int distance = this.getDistance(current, t);
+					final int distance = this.getDistance(current, town);
 					final int tempScore = currentScore + distance;
 					final int newScore = Math.min(oldScore, tempScore);
-					scores.put(t, newScore);
-					heap.put(newScore, t);
+					scores.put(town, newScore);
+					heap.put(newScore, town);
 				}
 			}
 		}
 		return scores.get(to);
 	}
 	
+	private Town getFirstStop(Town from) {
+		return this.getStops(from).get(0);
+	}
+	
 	int getShortestCyclicRoute(Town from) {
-		final List<Town> stops = this.map.get(from);
-		Town to = null;
-		int distance = Integer.MAX_VALUE;
-		for (Town t : stops) {
-			final int d = this.getDistance(from, t);
-			if (d < distance) {
-				to = t;
-				distance = d;
-			}
-		}
+		final Town to = this.getFirstStop(from);
 		int startDistance = this.getDistance(from, to);
 		return this.getShortestRoute(to, from) + startDistance;
 	}

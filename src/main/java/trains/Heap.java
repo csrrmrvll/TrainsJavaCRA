@@ -11,8 +11,8 @@ class Heap<K, V> {
 		this.data = new TreeMap<>();
 	}
 	
-	boolean isEmpty() {
-		return this.data.isEmpty();
+	boolean notEmpty() {
+		return this.data.isEmpty() == false;
 	}
 	
 	V put(K key, V value) {
@@ -23,7 +23,7 @@ class Heap<K, V> {
 		return this.data.remove(key);
 	}
 	
-	private Entry<K, V> top() {
+	Entry<K, V> top() {
 		return this.data.firstEntry();
 	}
 	
@@ -31,5 +31,10 @@ class Heap<K, V> {
 		final Entry<K, V> top = this.top();
 		this.remove(top.getKey());
 		return top;
+	}
+	
+	@Override
+	public String toString() {
+		return this.data.toString();
 	}
 }

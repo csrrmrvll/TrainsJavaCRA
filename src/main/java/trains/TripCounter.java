@@ -20,14 +20,14 @@ class TripCounter extends Counter {
 			this.stopCondition.decrease();
 			return;
 		}
-		final List<Town> stops = this.graph.getMap().get(from);
-		for (Town t : stops) {
-			if (to.equals(t)) {
+		final List<Town> stops = this.graph.getStops(from);
+		for (Town town : stops) {
+			if (to.equals(town)) {
 				this.increase();
 				this.stopCondition.decrease();
 				return;
 			}
-			this.getTrips(t, to);
+			this.getTrips(town, to);
 		}
 	}
 	
