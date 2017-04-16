@@ -81,22 +81,22 @@ public class GraphTest {
 	public void tearDown() throws Exception {
 	}
 	
-	private static <T> void assertAndPrint(T expected, T actual) {
+	private static <T> void assertAndPrint(T expected, T actual, int testNumber) {
 		Assert.assertEquals(expected, actual);
-		System.out.println(actual);
+		System.out.println(testNumber + ". " + actual);
 	}
 	
-	private static final void testRouteDistance(Route route) throws NoSuchRouteError {
-		final Graph GRAPH = new Graph(GRAPH_INPUT);
-		final int actual = GRAPH.getRouteDistance(route);
+	private static final void testRouteDistance(Route route, int testNumber) throws NoSuchRouteError {
+		final Graph graph = new Graph(GRAPH_INPUT);
+		final int actual = graph.getRouteDistance(route);
 		final int expected = DISTANCES.get(route);
-		GraphTest.assertAndPrint(expected, actual);
+		GraphTest.assertAndPrint(expected, actual, testNumber);
 	}
 	
 	@Test
 	public final void testRouteDistanceABC() {
 		try {
-			GraphTest.testRouteDistance(ABC);
+			GraphTest.testRouteDistance(ABC, 1);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
@@ -105,7 +105,7 @@ public class GraphTest {
 	@Test
 	public final void testRouteDistanceAD() {
 		try {
-			GraphTest.testRouteDistance(AD2);
+			GraphTest.testRouteDistance(AD2, 2);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
@@ -114,7 +114,7 @@ public class GraphTest {
 	@Test
 	public final void testRouteDistanceADC() {
 		try {
-			GraphTest.testRouteDistance(ADC);
+			GraphTest.testRouteDistance(ADC, 3);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
@@ -123,7 +123,7 @@ public class GraphTest {
 	@Test
 	public final void testRouteDistanceAEBCD() {
 		try {
-			GraphTest.testRouteDistance(AEBCD);
+			GraphTest.testRouteDistance(AEBCD, 4);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
@@ -132,19 +132,19 @@ public class GraphTest {
 	@Test
 	public final void testRouteDistanceAED() {
 		try {
-			GraphTest.testRouteDistance(AED);
+			GraphTest.testRouteDistance(AED, 5);
 		} catch (NoSuchRouteError e) {
-			System.out.println(e.getMessage());
+			System.out.println(5 + ". " + e.getMessage());
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
 	}
 	
-	private static final void testNumberOfTrips(Town from, Town to, RouteCondition sc, int expected) {
+	private static final void testNumberOfTrips(Town from, Town to, RouteCondition sc, int expected, int testNumber) {
 		try {
-			final Graph GRAPH = new Graph(GRAPH_INPUT);
-			final int actual = GRAPH.getNumberOfTrips(from, to, sc);
-			GraphTest.assertAndPrint(expected, actual);
+			final Graph graph = new Graph(GRAPH_INPUT);
+			final int actual = graph.getNumberOfTrips(from, to, sc);
+			GraphTest.assertAndPrint(expected, actual, testNumber);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
@@ -152,24 +152,19 @@ public class GraphTest {
 	
 	@Test
 	public final void testNumberOfTripsFromCToCWithThreeStopsMaximum() {
-		GraphTest.testNumberOfTrips(C, C, new LessThanOrEqualToLimitRouteCondition(C, 3), 2);
-	}
-	
-	@Test
-	public final void testNumberOfTripsFromCToCWithDistanceLessThanThirty() {
-		GraphTest.testNumberOfTrips(C, C, new LessThanLimitRouteCondition(C, 30), 7);
+		GraphTest.testNumberOfTrips(C, C, new LessThanOrEqualToLimitRouteCondition(C, 3), 2, 6);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromAToCWithFourStops() {
-		GraphTest.testNumberOfTrips(A, C, new EqualToLimitRouteCondition(C, 4), 3);
+		GraphTest.testNumberOfTrips(A, C, new EqualToLimitRouteCondition(C, 4), 3, 7);
 	}
 	
-	private static final void testShortestRoute(Town from, Town to, int expected) {
+	private static final void testShortestRoute(Town from, Town to, int expected, int testNumber) {
 		try {
-			final Graph GRAPH = new Graph(GRAPH_INPUT);
-			final int actual = GRAPH.getShortestRoute(from, to);
-			GraphTest.assertAndPrint(expected, actual);
+			final Graph graph = new Graph(GRAPH_INPUT);
+			final int actual = graph.getShortestRoute(from, to);
+			GraphTest.assertAndPrint(expected, actual, testNumber);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
@@ -177,11 +172,16 @@ public class GraphTest {
 	
 	@Test
 	public final void testShortestRouteFromAToC() {
-		GraphTest.testShortestRoute(A, C, 9);
+		GraphTest.testShortestRoute(A, C, 9, 8);
 	}
 	
 	@Test
 	public final void testShortestRouteFromBToB() {
-		GraphTest.testShortestRoute(B, B, 9);
+		GraphTest.testShortestRoute(B, B, 9, 9);
+	}
+	
+	@Test
+	public final void testNumberOfTripsFromCToCWithDistanceLessThanThirty() {
+		GraphTest.testNumberOfTrips(C, C, new LessThanLimitRouteCondition(C, 30), 7, 10);
 	}
 }

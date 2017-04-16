@@ -74,10 +74,6 @@ class Graph {
 	private final Map<Town, List<Route>>	routes		= new HashMap<>();
 	private final Set<Town>					explored	= new HashSet<>();
 	
-	private boolean notExplored(Town t) {
-		return this.explored.contains(t) == false;
-	}
-	
 	private void depthFirstSearch(Town from, Town to, Stack<Road> path) {
 		final List<Road> roads = this.map.get(to);
 		this.explored.add(to);
