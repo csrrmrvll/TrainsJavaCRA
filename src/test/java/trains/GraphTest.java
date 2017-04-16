@@ -3,7 +3,6 @@
  */
 package trains;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,34 +30,41 @@ public class GraphTest {
 	private static final Town					E			= new Town("E");
 	
 	private static final int					DIST_AB		= 5;
+	private static final int					DIST_AD		= 5;
+	private static final int					DIST_AE		= 7;
 	private static final int					DIST_BC		= 4;
 	private static final int					DIST_CD		= 8;
+	private static final int					DIST_CE		= 2;
 	private static final int					DIST_DC		= 8;
 	private static final int					DIST_DE		= 6;
-	private static final int					DIST_AD		= 5;
-	private static final int					DIST_CE		= 2;
 	private static final int					DIST_EB		= 3;
-	private static final int					DIST_AE		= 7;
+	private static final int					DIST_ED		= 22;
 	
-	private static final List<String>			GRAPH_INPUT	= Arrays.asList("AB" + String.valueOf(DIST_AB),
-			"BC" + String.valueOf(DIST_BC), "CD" + String.valueOf(DIST_CD), "DC" + String.valueOf(DIST_DC),
-			"DE" + String.valueOf(DIST_DE), "AD" + String.valueOf(DIST_AD), "CE" + String.valueOf(DIST_CE),
-			"EB" + String.valueOf(DIST_EB), "AE" + String.valueOf(DIST_AE));
+	private static final Road					AB			= new Road(A, B, DIST_AB);
+	private static final Road					BC			= new Road(B, C, DIST_BC);
+	private static final Road					CD			= new Road(C, D, DIST_CD);
+	private static final Road					DC			= new Road(D, C, DIST_DC);
+	private static final Road					DE			= new Road(D, E, DIST_DE);
+	private static final Road					AD			= new Road(A, D, DIST_AD);
+	private static final Road					CE			= new Road(C, E, DIST_CE);
+	private static final Road					EB			= new Road(E, B, DIST_EB);
+	private static final Road					ED			= new Road(E, D, DIST_ED);
+	private static final Road					AE			= new Road(A, E, DIST_AE);
 	
-	private static final Graph					GRAPH		= new Graph(GRAPH_INPUT);
+	private static final List<Road>				GRAPH_INPUT	= Arrays.asList(AB, BC, CD, DC, DE, AD, CE, EB, AE);
 	
-	private static final Route					ABC			= new Route(new ArrayList<>(Arrays.asList(B, C)));
-	private static final Route					AD			= new Route(new ArrayList<>(Arrays.asList(D)));
-	private static final Route					ADC			= new Route(new ArrayList<>(Arrays.asList(D, C)));
-	private static final Route					AEBCD		= new Route(new ArrayList<>(Arrays.asList(E, B, C, D)));
-	private static final Route					AED			= new Route(new ArrayList<>(Arrays.asList(E, D)));
+	private static final Route					ABC			= new Route(Arrays.asList(AB, BC));
+	private static final Route					AD2			= new Route(Arrays.asList(AD));
+	private static final Route					ADC			= new Route(Arrays.asList(AD, DC));
+	private static final Route					AEBCD		= new Route(Arrays.asList(AE, EB, BC, CD));
+	private static final Route					AED			= new Route(Arrays.asList(AE, ED));
 	
 	private static final Map<Route, Integer>	DISTANCES	= new HashMap<>();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		DISTANCES.put(ABC, DIST_AB + DIST_BC);
-		DISTANCES.put(AD, DIST_AD);
+		DISTANCES.put(AD2, DIST_AD);
 		DISTANCES.put(ADC, DIST_AD + DIST_DC);
 		DISTANCES.put(AEBCD, DIST_AE + DIST_EB + DIST_BC + DIST_CD);
 	}
@@ -81,7 +87,8 @@ public class GraphTest {
 	}
 	
 	private static final void testRouteDistance(Route route) throws NoSuchRouteError {
-		final int actual = GRAPH.getRouteDistance(A, route);
+		final Graph GRAPH = new Graph(GRAPH_INPUT);
+		final int actual = GRAPH.getRouteDistance(route);
 		final int expected = DISTANCES.get(route);
 		GraphTest.assertAndPrint(expected, actual);
 	}
@@ -98,7 +105,7 @@ public class GraphTest {
 	@Test
 	public final void testRouteDistanceAD() {
 		try {
-			GraphTest.testRouteDistance(AD);
+			GraphTest.testRouteDistance(AD2);
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
@@ -133,8 +140,9 @@ public class GraphTest {
 		}
 	}
 	
-	private static final void testNumberOfTrips(Town from, Town to, StopCondition sc, int expected) {
+	private static final void testNumberOfTrips(Town from, Town to, RouteCondition sc, int expected) {
 		try {
+			final Graph GRAPH = new Graph(GRAPH_INPUT);
 			final int actual = GRAPH.getNumberOfTrips(from, to, sc);
 			GraphTest.assertAndPrint(expected, actual);
 		} catch (Exception e) {
@@ -143,22 +151,23 @@ public class GraphTest {
 	}
 	
 	@Test
-	public final void testNumberOfTripsFromCToCWithLessThanThreeStops() {
-		GraphTest.testNumberOfTrips(C, C, new LessThanOrEqualStopCondition(3), 2);
+	public final void testNumberOfTripsFromCToCWithThreeStopsMaximum() {
+		GraphTest.testNumberOfTrips(C, C, new LessThanOrEqualToLimitRouteCondition(C, 3), 2);
 	}
 	
 	@Test
 	public final void testNumberOfTripsFromCToCWithDistanceLessThanThirty() {
-		GraphTest.testNumberOfTrips(C, C, new LessThanStopCondition(30), 7);
+		GraphTest.testNumberOfTrips(C, C, new LessThanLimitRouteCondition(C, 30), 7);
 	}
 	
 	@Test
-	public final void testNumberOfTripsFromAToC() {
-		GraphTest.testNumberOfTrips(A, C, new EqualToStopCondition(4), 3);
+	public final void testNumberOfTripsFromAToCWithFourStops() {
+		GraphTest.testNumberOfTrips(A, C, new EqualToLimitRouteCondition(C, 4), 3);
 	}
 	
 	private static final void testShortestRoute(Town from, Town to, int expected) {
 		try {
+			final Graph GRAPH = new Graph(GRAPH_INPUT);
 			final int actual = GRAPH.getShortestRoute(from, to);
 			GraphTest.assertAndPrint(expected, actual);
 		} catch (Exception e) {
@@ -171,17 +180,8 @@ public class GraphTest {
 		GraphTest.testShortestRoute(A, C, 9);
 	}
 	
-	private static final void testShortestCyclicRoute(Town from, int expected) {
-		try {
-			final int actual = GRAPH.getShortestCyclicRoute(from);
-			GraphTest.assertAndPrint(expected, actual);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-	
 	@Test
 	public final void testShortestRouteFromBToB() {
-		GraphTest.testShortestCyclicRoute(B, 9);
+		GraphTest.testShortestRoute(B, B, 9);
 	}
 }
