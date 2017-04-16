@@ -21,4 +21,6 @@ The code is not optimal in the sense that a road-labelling procedure will avoid 
 redundant computations currently performed by the solution, but lack of time and the fact that the input
 is small and no real performance penalty is involved have prevented me from attempting a further approach.
 
+3. Project history:
 
+I have used Git as SCM, all history is included and can be checked (.git folder); I have tried to log meaningful messages.
