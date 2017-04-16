@@ -3,11 +3,9 @@ package trains;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.Stack;
 
 class Graph {
@@ -72,14 +70,14 @@ class Graph {
 	}
 	
 	private final Map<Town, List<Route>>	routes		= new HashMap<>();
-	private final Set<Town>					explored	= new HashSet<>();
+	
+	private static final int				MAX_STOPS	= 10;
 	
 	private void depthFirstSearch(Town from, Town to, Stack<Road> path) {
 		final List<Road> roads = this.map.get(to);
-		this.explored.add(to);
 		for (Road r : roads) {
 			final Town t = r.getTo();
-			if (path.size() < 10) {
+			if (path.size() < MAX_STOPS) {
 				path.add(r);
 				this.depthFirstSearch(from, t, path);
 			} else {
@@ -103,7 +101,6 @@ class Graph {
 	
 	private void computeRoutes() {
 		for (Entry<Town, List<Road>> e : this.map.entrySet()) {
-			this.explored.clear();
 			final Town from = e.getKey();
 			Stack<Road> sr = new Stack<>();
 			this.depthFirstSearch(from, from, sr);
