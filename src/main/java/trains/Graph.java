@@ -83,7 +83,7 @@ class Graph {
 		this.explored.add(to);
 		for (Road r : roads) {
 			final Town t = r.getTo();
-			if (this.notExplored(t)) {
+			if (path.size() < 10) {
 				path.add(r);
 				this.depthFirstSearch(from, t, path);
 			} else {
